@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Белмаш — Целевая модель управления TO-BE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800;900&family=Nunito+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy-deep:#121a33;
+  --navy:#1b2545;
+  --navy-2:#232f57;
+  --cream:#f6f1e6;
+  --cream-2:#efe8d8;
+  --white:#fffdf8;
+  --gold:#c69a52;
+  --gold-dark:#a97f3d;
+  --teal:#2f5c60;
+  --text-navy:#1b2545;
+  --text-gray:#6c6f74;
+  --text-gray-2:#8d9096;
+  --border:#e2dbc8;
+  --border-2:#d8d0ba;
+
+  --g1:#5f4c86;  --g1-t:#eae4f3;
+  --g2:#9b3c61;  --g2-t:#f5e5ec;
+  --g3:#7c3141;  --g3-t:#f3e3e5;
+  --g4:#455a74;  --g4-t:#e5e9ef;
+  --g5:#786e2e;  --g5-t:#efedd9;
+  --g6:#a6842e;  --g6-t:#f5ecd7;
+  --g7:#a9762c;  --g7-t:#f6ead4;
+  --g8:#4a3e73;  --g8-t:#e7e3f0;
+  --g9:#4a7a58;  --g9-t:#e4efe6;
+  --g10:#2e6b62; --g10-t:#e0eeeb;
+  --g11:#375f86; --g11-t:#e2e9f1;
+  --g12:#8a5a34; --g12-t:#f1e5d9;
+  --g13:#565f7a; --g13-t:#e6e7ee;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--cream);
+  color:var(--text-navy);
+  font-family:'Nunito Sans',sans-serif;
+}
+.wrap{max-width:1240px;margin:0 auto;padding:0 40px}
+h1,h2,h3{font-family:'Playfair Display',serif}
+
+/* ============ DARK HERO ============ */
+.masthead{
+  background:
+    radial-gradient(1.5px 1.5px at 20px 20px, rgba(255,255,255,.08) 1px, transparent 0),
+    radial-gradient(1.5px 1.5px at 60px 60px, rgba(255,255,255,.06) 1px, transparent 0),
+    var(--navy-deep);
+  background-size:40px 40px, 40px 40px, auto;
+  color:#f4efe3;
+  padding:64px 0 46px;
+}
+.eyebrow-box{
+  display:inline-flex;border:1px solid var(--gold);border-radius:3px;
+  padding:9px 18px;font-family:'Nunito Sans';font-size:12px;letter-spacing:.18em;
+  color:var(--gold);text-transform:uppercase;font-weight:700;margin-bottom:38px;
+}
+.masthead h1{
+  font-size:56px;line-height:1.16;font-weight:800;max-width:820px;color:#fbf7ee;
+}
+.masthead h1 .accent{color:var(--gold);display:block}
+.masthead p.sub{
+  margin-top:26px;max-width:640px;color:#aab0c0;font-size:16px;line-height:1.7;font-weight:400;
+}
+.stat-row{display:flex;margin-top:46px;border-top:1px solid rgba(255,255,255,.14);padding-top:0}
+.stat{padding:22px 40px 0 0;margin-right:40px;border-right:1px solid rgba(255,255,255,.14);flex:1;max-width:220px}
+.stat:last-child{border-right:none}
+.stat b{display:block;font-family:'Playfair Display';font-size:34px;font-weight:800;color:var(--gold)}
+.stat span{font-size:11px;letter-spacing:.1em;color:#8992a5;text-transform:uppercase;font-weight:600}
+
+/* ============ TOP TAB BAR ============ */
+.topbar{position:sticky;top:0;z-index:60;background:var(--navy);border-bottom:1px solid rgba(255,255,255,.08)}
+.tabs{display:flex;max-width:1240px;margin:0 auto;padding:0 40px}
+.tab-btn{
+  font-family:'Nunito Sans';font-size:12.5px;font-weight:700;letter-spacing:.09em;
+  color:#8a91ab;background:transparent;border:none;text-transform:uppercase;
+  padding:22px 24px;cursor:pointer;position:relative;transition:.15s;
+}
+.tab-btn:hover{color:#c6cbdc}
+.tab-btn.active{color:var(--gold)}
+.tab-btn.active::after{
+  content:'';position:absolute;left:14px;right:14px;bottom:0;height:2px;background:var(--gold);
+}
+.tab-btn.active::before{
+  content:'';position:absolute;top:9px;bottom:9px;left:8px;right:8px;border:1px solid rgba(198,154,82,.5);border-radius:3px;
+}
+
+/* ============ SECTION HEAD ============ */
+.panel{display:none;padding:60px 0 100px}
+.panel.active{display:block}
+.eyebrow{font-family:'Nunito Sans';font-size:12.5px;font-weight:700;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin-bottom:16px}
+.panel h2{font-size:38px;font-weight:700;color:var(--text-navy);line-height:1.2}
+.panel > .wrap > p.lede{margin-top:18px;max-width:780px;color:var(--text-gray);font-size:16px;line-height:1.75}
+
+/* ============ LOGIC TAB ============ */
+.logic-grid{display:grid;grid-template-columns:1fr 1fr;margin-top:44px;border-top:1px solid var(--border-2)}
+.logic-card{padding:34px 40px 34px 0;position:relative}
+.logic-card:nth-child(odd){border-right:1px solid var(--border-2);padding-right:40px}
+.logic-card:nth-child(even){padding-left:40px}
+.logic-card:nth-child(1),.logic-card:nth-child(2){border-top:3px solid var(--gold)}
+.logic-card:nth-child(1){border-top-color:var(--gold)}
+.logic-card:nth-child(2){border-top-color:var(--teal)}
+.logic-card:nth-child(3){border-top:3px solid var(--teal)}
+.logic-card:nth-child(4){border-top:3px solid var(--gold)}
+.logic-card .ghost-num{font-family:'Playfair Display';font-size:52px;font-weight:800;color:#00000012;line-height:1;margin:26px 0 6px}
+.logic-card h3{font-size:19px;font-weight:700;color:var(--text-navy);margin-bottom:14px}
+.logic-card p{color:var(--text-gray);font-size:14.5px;line-height:1.75}
+
+.layer-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:56px;border:1px solid var(--border-2)}
+.layer-card{padding:32px 36px}
+.layer-card:first-child{border-right:1px solid var(--border-2);border-top:3px solid var(--gold)}
+.layer-card:last-child{border-top:3px solid var(--teal)}
+.layer-card h3{font-size:20px;margin-bottom:18px;color:var(--text-navy)}
+.layer-card ul{list-style:none}
+.layer-card li{font-size:14px;color:var(--text-gray);padding:10px 0;border-top:1px dashed var(--border-2);padding-left:16px;position:relative;line-height:1.6}
+.layer-card li:first-child{border-top:none}
+.layer-card li::before{content:'—';position:absolute;left:0;color:var(--gold)}
+
+/* ============ ORG CHART ============ */
+.gd-box{
+  background:var(--navy);border-radius:6px;padding:22px 34px;text-align:center;
+  max-width:640px;margin:60px auto 0;
+}
+.gd-box h3{color:#fbf7ee;font-size:22px;font-weight:700}
+.gd-box span{display:block;margin-top:6px;font-family:'Nunito Sans';font-size:11.5px;letter-spacing:.1em;color:var(--gold);font-weight:700;text-transform:uppercase}
+.trunk{width:1px;height:28px;background:var(--border-2);margin:0 auto}
+.trunk-h{height:1px;background:var(--border-2);margin-top:0}
+
+.branch-scroll{overflow-x:auto;padding-bottom:20px;margin-top:0;border-top:1px solid var(--border-2)}
+.branches{display:flex;gap:0;width:max-content;padding-top:0}
+.branch{width:250px;border-right:1px solid var(--border-2);display:flex;flex-direction:column;background:var(--white)}
+.branch-head{padding:16px 18px;color:#fff}
+.branch-head b{font-size:12.5px;font-weight:800;letter-spacing:.01em;text-transform:uppercase;line-height:1.35;display:block}
+.branch-head small{display:block;margin-top:6px;font-size:10.5px;opacity:.85;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.branch-body{padding:14px 18px 20px;flex:1}
+.node{font-size:13px;color:var(--text-navy);padding:8px 0;border-top:1px solid var(--border);line-height:1.4}
+.node:first-child{border-top:none}
+.node.removed{text-decoration:line-through;opacity:.4}
+.node .arrow{color:var(--text-gray-2);margin-right:4px}
+.edit-mark{
+  display:inline-block;font-family:'Nunito Sans';font-size:9px;font-weight:800;color:#fff;background:var(--gold-dark);
+  border-radius:3px;padding:1px 6px;margin-left:6px;vertical-align:middle;letter-spacing:.03em;
+}
+
+.changelog{margin-top:56px;border:1px solid var(--border-2);background:var(--white);padding:32px 38px}
+.changelog h3{font-family:'Playfair Display';font-size:20px;color:var(--text-navy);margin-bottom:18px}
+.changelog ol{list-style:none;counter-reset:cl}
+.changelog li{counter-increment:cl;font-size:14px;color:var(--text-gray);padding:12px 0;border-top:1px dashed var(--border-2);display:flex;gap:14px;line-height:1.65}
+.changelog li:first-child{border-top:none}
+.changelog li::before{
+  content:counter(cl);font-family:'Playfair Display';font-weight:800;color:var(--gold-dark);
+  border:1px solid var(--gold);width:24px;height:24px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:12px;flex-shrink:0;margin-top:1px;
+}
+.changelog li b{color:var(--text-navy);font-weight:700}
+
+/* ============ ROLES TAB ============ */
+.group-block{margin-top:46px}
+.group-block:first-child{margin-top:44px}
+.group-box{border-left:5px solid var(--g);background:var(--gt);padding:26px 32px;margin-bottom:0}
+.group-box .flabel{font-family:'Nunito Sans';font-size:11.5px;font-weight:800;letter-spacing:.12em;color:var(--g);text-transform:uppercase;margin-bottom:8px}
+.group-box h3{font-size:27px;color:var(--text-navy);margin-bottom:12px}
+.group-box .clabel{font-family:'Nunito Sans';font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--gold-dark);text-transform:uppercase;margin-bottom:6px}
+.group-box .cdesc{color:var(--text-gray);font-size:14.5px;line-height:1.7;max-width:920px}
+.group-box .csub{margin-top:10px;font-size:13px;color:var(--text-gray-2);font-style:italic}
+
+.roles-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));border:1px solid var(--border-2);border-top:none}
+.role-card{padding:24px 26px;border-top:1px solid var(--border-2);border-right:1px solid var(--border-2);background:var(--white)}
+.role-card.new{background:var(--gt)}
+.role-card h4{font-size:15px;font-weight:700;color:var(--text-navy);line-height:1.35;margin-bottom:6px}
+.role-card .rsub{font-size:12px;color:var(--text-gray);margin-bottom:12px}
+.role-card .rtag{
+  display:inline-block;font-family:'Nunito Sans';font-size:10px;font-weight:800;letter-spacing:.05em;
+  color:var(--g);background:var(--gt);border-radius:3px;padding:3px 9px;margin-bottom:12px;text-transform:uppercase;
+}
+.role-card .rlabel{font-family:'Nunito Sans';font-size:10.5px;font-weight:800;letter-spacing:.09em;color:var(--gold-dark);text-transform:uppercase;margin:12px 0 5px}
+.role-card .rckp{font-size:13px;color:var(--text-gray);line-height:1.65}
+.role-card .rfn{font-size:12.4px;color:var(--text-gray);line-height:1.75}
+
+/* ============ COMMITTEES ============ */
+.comm-grid{display:grid;grid-template-columns:1fr 1fr;margin-top:44px;border:1px solid var(--border-2)}
+.comm-card{background:var(--white)}
+.comm-head{padding:26px 30px;color:#fff}
+.comm-head h3{font-size:22px;margin-bottom:6px}
+.comm-head span{font-family:'Nunito Sans';font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.92}
+.comm-body{padding:26px 30px 30px}
+.comm-body .label{font-family:'Nunito Sans';font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--gold-dark);text-transform:uppercase;margin:18px 0 10px}
+.comm-body .label:first-child{margin-top:0}
+.people-pills{display:flex;flex-wrap:wrap;gap:8px}
+.pill{font-size:12px;background:var(--cream-2);border:1px solid var(--border-2);border-radius:4px;padding:6px 12px;color:var(--text-navy);font-weight:600}
+.metric-box{border-left:3px solid var(--gold);padding:12px 16px;margin-bottom:10px;background:var(--cream)}
+.metric-box b{font-size:13.5px;color:var(--text-navy);display:block;margin-bottom:5px}
+.metric-box p{font-size:12.6px;color:var(--text-gray);line-height:1.6}
+.comm-body ul{list-style:none}
+.comm-body ul li{font-size:13px;color:var(--text-gray);padding:6px 0 6px 14px;position:relative;line-height:1.55}
+.comm-body ul li::before{content:'—';position:absolute;left:0;color:var(--gold-dark)}
+.bonus{margin-top:16px;padding-top:14px;border-top:1px dashed var(--border-2);font-size:12.6px;color:var(--teal);font-weight:700}
+
+/* ============ RHYTHM ============ */
+.rhythm-grid{display:grid;grid-template-columns:repeat(4,1fr);margin-top:44px;border:1px solid var(--border-2)}
+.rhythm-col{padding:30px 28px;border-right:1px solid var(--border-2)}
+.rhythm-col:last-child{border-right:none}
+.rhythm-col .freq{font-family:'Playfair Display';font-size:26px;font-weight:800;color:var(--gold-dark);margin-bottom:14px}
+.rhythm-col h4{font-size:13.5px;font-weight:800;color:var(--text-navy);margin-bottom:16px;text-transform:uppercase;letter-spacing:.02em}
+.rhythm-col ul{list-style:none}
+.rhythm-col li{font-size:13px;color:var(--text-gray);padding:8px 0;border-top:1px solid var(--border);padding-left:12px;position:relative;line-height:1.55}
+.rhythm-col li:first-child{border-top:none}
+.rhythm-col li::before{content:'—';position:absolute;left:0;color:var(--text-gray-2)}
+
+.report-section{margin-top:64px}
+.report-section h2{font-size:24px;color:var(--text-navy);margin-bottom:12px}
+.report-section p.lede{color:var(--text-gray);font-size:14.5px;max-width:760px;line-height:1.7;margin-bottom:30px}
+.report-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));border:1px solid var(--border-2)}
+.report-card{padding:22px 24px;border-top:1px solid var(--border-2);border-right:1px solid var(--border-2);background:var(--white)}
+.report-card h4{font-size:14px;color:var(--text-navy);font-weight:700;margin-bottom:2px}
+.report-card .rtag{font-size:10.5px;color:var(--gold-dark);font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-bottom:10px}
+.report-card p{font-size:12px;color:var(--text-gray);line-height:1.6;margin-bottom:5px;padding-left:11px;position:relative}
+.report-card p::before{content:'—';position:absolute;left:0;color:var(--text-gray-2)}
+
+footer{border-top:1px solid var(--border-2);padding:30px 0;text-align:center;color:var(--text-gray-2);font-size:11.5px;font-weight:600;letter-spacing:.04em}
+
+@media (max-width:900px){
+  .masthead h1{font-size:38px}
+  .logic-grid,.layer-grid,.comm-grid{grid-template-columns:1fr}
+  .logic-card:nth-child(odd){border-right:none}
+  .logic-card:nth-child(even){padding-left:0}
+  .rhythm-grid{grid-template-columns:1fr}
+  .rhythm-col{border-right:none;border-bottom:1px solid var(--border-2)}
+  .stat-row{flex-wrap:wrap;gap:20px}
+}
+</style>
+</head>
+<body>
+
+<div class="masthead">
+  <div class="wrap">
+    <div class="eyebrow-box">Белмаш · TO-BE · Целевая модель управления</div>
+    <h1>Архитектура управления<span class="accent">нового уровня</span></h1>
+    <p class="sub">Полное описание целевой модели: 13 функциональных групп, 4 управленческих комитета, все роли с ЦКП и функционалами, система регулярного менеджмента</p>
+    <div class="stat-row">
+      <div class="stat"><b>13</b><span>Прямых отчётов ГД</span></div>
+      <div class="stat"><b>4</b><span>Комитета</span></div>
+      <div class="stat"><b>52</b><span>Роли</span></div>
+      <div class="stat"><b>2</b><span>Слоя управл.</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="topbar">
+  <div class="tabs" id="tabs">
+    <button class="tab-btn active" data-tab="logic">Логика модели</button>
+    <button class="tab-btn" data-tab="org">Оргструктура</button>
+    <button class="tab-btn" data-tab="roles">Роли и ЦКП</button>
+    <button class="tab-btn" data-tab="committees">Комитеты</button>
+    <button class="tab-btn" data-tab="rhythm">Регулярный менеджмент</button>
+  </div>
+</div>
+
+<!-- ================= TAB 1: LOGIC ================= -->
+<div class="panel active" id="panel-logic">
+  <div class="wrap">
+    <div class="eyebrow">01 — Логика модели</div>
+    <h2>Почему именно такая архитектура</h2>
+    <p class="lede">Изменение системы мотивации потребовало пересмотра самой структуры управления: корректная мотивация невозможна без чёткого распределения ролей, ЦКП и зон ответственности.</p>
+
+    <div class="logic-grid">
+      <div class="logic-card"><div class="ghost-num">01</div>
+        <h3>Ключевая проблема AS-IS</h3>
+        <p>Нет единого центра ответственности за результат. Коммерческие каналы жили по разной логике управления. Премирование заменялось выполнением задач. Роли описывались через перечень действий, а не через конечный продукт. Входящий поток оседал стихийно — без квалификации и маршрутизации.</p>
+      </div>
+      <div class="logic-card"><div class="ghost-num">02</div>
+        <h3>Принцип TO-BE</h3>
+        <p>Каждая роль — один ЦКП. У каждого канала — свой владелец. Продающие и сопровождающие функции разведены. Входящий поток маршрутизируется по типу клиента. Мотивация привязана к результату, а не к активности.</p>
+      </div>
+      <div class="logic-card"><div class="ghost-num">03</div>
+        <h3>Запрос на плоскую модель</h3>
+        <p>Максимум 2 уровня иерархии. Все руководители функциональных групп отчитываются ГД напрямую ежемесячно по единому шаблону: план / факт / что мешает / что нужно.</p>
+      </div>
+      <div class="logic-card"><div class="ghost-num">04</div>
+        <h3>Решение: два слоя управления</h3>
+        <p>Слой 1 — функциональные группы с прямым подчинением ГД. Слой 2 — четыре комитета для решений на стыке групп: командный показатель + командный бонус.</p>
+      </div>
+    </div>
+
+    <div class="layer-grid">
+      <div class="layer-card">
+        <h3>Слой 1 — Оргструктура</h3>
+        <ul>
+          <li>13 функциональных групп напрямую к ГД без промежуточных уровней</li>
+          <li>Ежемесячные письменные отчёты каждого руководителя</li>
+          <li>Мотивация руководителя — от результата его функциональной группы</li>
+          <li>Каждая роль имеет ЦКП — конечный продукт, а не набор действий</li>
+        </ul>
+      </div>
+      <div class="layer-card">
+        <h3>Слой 2 — Комитеты</h3>
+        <ul>
+          <li>Периодические встречи для решений на стыке нескольких групп</li>
+          <li>Комитет не управляет постоянно — собрались, решили, разошлись</li>
+          <li>4 комитета: коммерческий, ассортиментный, операционный, финансовый</li>
+          <li>Командный бонус — от результата комитета</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= TAB 2: ORG CHART ================= -->
+<div class="panel" id="panel-org">
+  <div class="wrap">
+    <div class="eyebrow">02 — Оргструктура</div>
+    <h2>Целевая схема TO-BE</h2>
+    <p class="lede">13 прямых подчинённых ГД. Все руководители функциональных групп на одном уровне. Коммерческий контур разделён на три самостоятельных канала. Схему можно листать по горизонтали.</p>
+
+    <div class="gd-box">
+      <h3>Генеральный директор</h3>
+      <span>13 прямых подчинённых — отчёты ежемесячно</span>
+    </div>
+    <div class="trunk"></div>
+    <div class="branch-scroll">
+      <div class="branches" id="orgBranches"></div>
+    </div>
+
+    <div class="changelog">
+      <h3>Внесённые правки по комментариям заказчика</h3>
+      <ol>
+        <li><b>Зам. ГД по развитию бизнеса</b> — в зону ответственности добавлены «исследования и аналитика».</li>
+        <li><b>Рук. отдела развития продуктов</b> — добавлена роль «Дизайнер-верстальщик».</li>
+        <li><b>Рук. технического отдела</b> — убрана строка «Прямое подчинение ГД» в блоке оргструктуры.</li>
+        <li><b>РОП E-com</b> — добавлена роль «Руководитель И-М»; блок продаж интернет-магазина изменён на 3 менеджеров (2 продажи, включая лидирование, + 1 сопровождение); менеджеров по маркетплейсам стало 3.</li>
+        <li><b>Рук. по закупкам и ВЭД</b> — менеджер по ВЭД теперь в штате 2 сотрудника.</li>
+        <li><b>Зам. ГД по финансам и экономике</b> — роль «Специалист по ценообразованию» упразднена, функция передаётся на автоматизацию.</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<!-- ================= TAB 3: ROLES ================= -->
+<div class="panel" id="panel-roles">
+  <div class="wrap">
+    <div class="eyebrow">03 — Роли и ЦКП</div>
+    <h2>Функциональные группы, ЦКП и роли</h2>
+    <p class="lede">Каждая группа имеет ЦКП — конечный результат перед ГД. Внутри каждой группы — ЦКП и функционал каждой роли.</p>
+    <div id="groupList"></div>
+  </div>
+</div>
+
+<!-- ================= TAB 4: COMMITTEES ================= -->
+<div class="panel" id="panel-committees">
+  <div class="wrap">
+    <div class="eyebrow">04 — Комитеты</div>
+    <h2>Четыре комитета — второй слой управления</h2>
+    <p class="lede">Комитет — не уровень иерархии, а периодическая рабочая группа для решений на стыке нескольких функциональных групп. У каждого один сквозной показатель, которого ни одна группа не достигает в одиночку.</p>
+
+    <div class="comm-grid">
+      <div class="comm-card">
+        <div class="comm-head" style="background:var(--gold-dark)">
+          <h3>Коммерческий комитет</h3><span>1 раз в месяц · Председатель — ГД</span>
+        </div>
+        <div class="comm-body">
+          <div class="label">Участники</div>
+          <div class="people-pills">
+            <span class="pill">ГД (председатель)</span><span class="pill">РОП E-com</span><span class="pill">РОП (дилеры, дистрибьюторы)</span><span class="pill">РОП тендерного отдела (B2G)</span><span class="pill">Зам. ГД по развитию бизнеса</span><span class="pill">Зам. ГД по финансам и экономике</span>
+          </div>
+          <div class="label">Командные показатели</div>
+          <div class="metric-box"><b>Конверсия входящего потока в выручку</b><p>Все обращения по всем цифровым точкам входа → закрытые сделки. Без трафика от Развития — мало лидов. Без квалификации e-com — потери на входе. Без правильной маршрутизации — B2B не разрабатывается в опте.</p></div>
+          <div class="metric-box"><b>Общее выполнение плана по всем каналам</b><p>Суммарный план e-com + опт + тендер. Ни один канал не выполнит его в одиночку — общий бонус только при выполнении общего плана.</p></div>
+          <div class="label">Постоянная повестка</div>
+          <ul>
+            <li>Синхронизация акционной и ценовой политики между каналами</li>
+            <li>Разбор конфликтов по распределению клиентской базы e-com ↔ опт</li>
+            <li>Исполнение регламента передачи B2B-клиентов: разбор отклонений</li>
+            <li>Квартальное согласование коммерческих планов по каналам</li>
+          </ul>
+          <div class="bonus">✓ Командный бонус ежеквартально при выполнении общего плана и росте конверсии</div>
+        </div>
+      </div>
+
+      <div class="comm-card">
+        <div class="comm-head" style="background:var(--teal)">
+          <h3>Ассортиментный комитет</h3><span>1 раз в месяц · Ведёт Зам. ГД по развитию</span>
+        </div>
+        <div class="comm-body">
+          <div class="label">Участники</div>
+          <div class="people-pills">
+            <span class="pill">Зам. ГД по развитию (ведущий)</span><span class="pill">Рук. отдела развития продуктов</span><span class="pill">Рук. по закупкам и ВЭД</span><span class="pill">РОП E-com</span><span class="pill">РОП (дилеры, дистрибьюторы)</span><span class="pill">Зам. ГД по финансам и экономике</span>
+          </div>
+          <div class="label">Роль комитета</div>
+          <div class="metric-box"><b>Коллегиальное управление ассортиментом</b><p>Решения по ассортименту принимаются с учётом продуктовой экспертизы Развития, логики закупок и реального спроса от обоих коммерческих каналов.</p></div>
+          <div class="label">Командный показатель</div>
+          <div class="metric-box"><b>Доля активного ассортимента в выручке</b><p>% SKU с продажами в квартале × маржинальность. Закупки предоставляют данные о сроках, ценах и объёмах — решения о том, что закупать, принимаются здесь.</p></div>
+          <div class="label">Постоянная повестка</div>
+          <ul>
+            <li>Запуск новинок: что, когда, в каком объёме по каналам</li>
+            <li>Вывод неликвидных SKU: критерии и сроки</li>
+            <li>Приоритизация ассортимента по каналам (e-com / опт)</li>
+          </ul>
+          <div class="bonus">✓ Командный бонус при росте доли активного ассортимента квартал к кварталу</div>
+        </div>
+      </div>
+
+      <div class="comm-card">
+        <div class="comm-head" style="background:var(--navy)">
+          <h3>Операционный комитет</h3><span>1 раз в месяц · Дашборд еженедельно</span>
+        </div>
+        <div class="comm-body">
+          <div class="label">Участники</div>
+          <div class="people-pills">
+            <span class="pill">Рук. складского хранения и логистики</span><span class="pill">Рук. сервисного обслуживания</span><span class="pill">Руководитель IT</span><span class="pill">Рук. по закупкам и ВЭД</span><span class="pill">ГД (по необходимости)</span>
+          </div>
+          <div class="label">Командный показатель</div>
+          <div class="metric-box"><b>% заказов без рекламации — от приёма до доставки</b><p>Сквозной SLA: заказ принят → собран → отгружен → доставлен → клиент доволен. Склад — за сборку, IT — за бесперебойность систем, Сервис — за рекламации, Закупки — за наличие товара.</p></div>
+          <div class="label">Как работает без промежуточного уровня</div>
+          <ul>
+            <li>Еженедельный дашборд сквозного SLA виден всем участникам</li>
+            <li>Падение ниже 90% → публичный разбор с ГД</li>
+            <li>Общий бонус снимает желание перекладывать вину на соседей</li>
+          </ul>
+          <div class="bonus">✓ Командный бонус при достижении 98%+ заказов без рекламации</div>
+        </div>
+      </div>
+
+      <div class="comm-card">
+        <div class="comm-head" style="background:var(--g3)">
+          <h3>Финансовый комитет</h3><span>1 раз в месяц · Председатель — ГД</span>
+        </div>
+        <div class="comm-body">
+          <div class="label">Участники</div>
+          <div class="people-pills">
+            <span class="pill">ГД (председатель)</span><span class="pill">Зам. ГД по развитию бизнеса</span><span class="pill">Зам. ГД по финансам и экономике (ведёт)</span><span class="pill">Главный бухгалтер</span>
+          </div>
+          <div class="label">Командный показатель</div>
+          <div class="metric-box"><b>Точность прогноза и выполнение бюджета ≤10% отклонения</b><p>Отклонение факт/план не более 10% по каждому блоку. Дисциплинирует честно называть реалистичные цифры.</p></div>
+          <div class="label">Постоянная повестка</div>
+          <ul>
+            <li>Сверка план/факт по каждому блоку за месяц</li>
+            <li>Согласование бюджетов на следующий месяц</li>
+            <li>Раз в квартал — письменная оценка ГД каждому руководителю</li>
+          </ul>
+          <div class="bonus">✓ Точность прогноза в диапазоне ±10% от факта — бонус к оценке</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= TAB 5: RHYTHM ================= -->
+<div class="panel" id="panel-rhythm">
+  <div class="wrap">
+    <div class="eyebrow">05 — Регулярный менеджмент</div>
+    <h2>Ритм управления компанией</h2>
+    <p class="lede">Два слоя управления — два ритма. Функциональные группы: частый операционный контакт. Комитеты: плановые встречи для кросс-функциональных решений. Единый дашборд с показателями всех групп ведётся постоянно.</p>
+
+    <div class="rhythm-grid">
+      <div class="rhythm-col">
+        <div class="freq">Еженедельно</div>
+        <h4>Внутри каждой группы</h4>
+        <ul>
+          <li>Планёрка внутри группы (30 мин)</li>
+          <li>Обновление общего дашборда — все показатели видны всем</li>
+          <li>Синхронизация e-com ↔ опт по клиентским передачам</li>
+          <li>Разбор текущих блокеров</li>
+        </ul>
+      </div>
+      <div class="rhythm-col">
+        <div class="freq">1×/мес</div>
+        <h4>Коммерческий и Операционный комитет</h4>
+        <ul>
+          <li>Динамика сквозных показателей</li>
+          <li>Разбор конфликтов между группами</li>
+          <li>Синхронизация приоритетов</li>
+          <li>Протокол — задача / ответственный / срок — рассылка в 24 ч</li>
+        </ul>
+      </div>
+      <div class="rhythm-col">
+        <div class="freq">1×/мес</div>
+        <h4>Фин. комитет, Ассортиментный, Отчёты ГД</h4>
+        <ul>
+          <li>Каждый руководитель — письменный отчёт ГД</li>
+          <li>Шаблон: план / факт / что мешает / что нужно от кого</li>
+          <li>Финансовый комитет: план/факт, бюджет, прогноз</li>
+          <li>Ассортиментный комитет: новинки, ротация SKU</li>
+        </ul>
+      </div>
+      <div class="rhythm-col">
+        <div class="freq">1×/кварт.</div>
+        <h4>Квартальные итоги</h4>
+        <ul>
+          <li>Глубокая сверка план/факт по всем группам</li>
+          <li>Письменная оценка ГД каждому руководителю</li>
+          <li>Корректировка целевых показателей на след. квартал</li>
+          <li>Корректировка системы мотивации при необходимости</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="report-section">
+      <h2>Ежемесячный отчёт: 13 групп + 4 комитета</h2>
+      <p class="lede">Каждый из 13 прямых подчинённых ГД ежемесячно предоставляет письменный отчёт по единому шаблону: план / факт / что мешает / что нужно от кого.</p>
+      <div class="report-grid" id="reportGrid"></div>
+    </div>
+  </div>
+</div>
+
+<footer>Белмаш · TO-BE · Целевая модель управления</footer>
+
+<script>
+/* ---------------- TABS ---------------- */
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-'+btn.dataset.tab).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+});
+
+/* ---------------- ORG CHART DATA ---------------- */
+const orgBranches = [
+  {title:'Рук. направления по работе с персоналом',tag:'Персонал · АХО',color:'var(--g1)',
+    nodes:[{t:'Юрист'},{t:'HR-специалист'},{t:'Спец. по ОТ и ТБ'},{t:'Спец. по АХО'},{t:'Офис-менеджер'},{t:'Уборщица'}]},
+  {title:'Зам. ГД по развитию бизнеса',tag:'Продвижение · Кл. сервис · Исслед. и аналитика',color:'var(--g2)',edit:'ред. 1',
+    nodes:[{t:'Брендинговое агентство'},{t:'Дизайнер'},{t:'Менеджер по соц. медиа'},{t:'Digital-специалист'},{t:'Рук. клиентского сервиса'},{t:'Менеджер кл. сервиса'}]},
+  {title:'Рук. отдела развития продуктов',tag:'Продукт',color:'var(--g3)',
+    nodes:[{t:'Менеджер отдела развития'},{t:'Дизайнер-верстальщик',highlight:true,edit:'ред. 2 · новая роль'}]},
+  {title:'Рук. технического отдела',tag:'Технический отдел',color:'var(--g4)',edit:'ред. 3',
+    nodes:[{t:'Инженер по диагностике оборудования'}]},
+  {title:'РОП тендерного отдела (B2G)',tag:'— вакансия —',color:'var(--g5)',
+    nodes:[{t:'Менеджер по тендерам'}]},
+  {title:'РОП E-com',tag:'Интернет-магазин · Маркетплейсы',color:'var(--g6)',edit:'ред. 4',
+    nodes:[{t:'Руководитель И-М',highlight:true,edit:'новая роль'},{t:'Менеджер по продажам (лидирование)',qty:2},{t:'Менеджер по сопровождению',qty:1},{t:'Менеджер по маркетплейсам',qty:3,highlight:true,edit:'было ×2'}]},
+  {title:'РОП (дилеры, дистрибьюторы)',tag:'Опт / B2B',color:'var(--g7)',
+    nodes:[{t:'Менеджер по продажам ПФО'},{t:'Менеджер по продажам ЦФО'},{t:'Менеджер по продажам ЮФО/СКФО'},{t:'КАМ (ключевые клиенты)'},{t:'Менеджер по сопровождению',qty:3}]},
+  {title:'Рук. по закупкам и ВЭД',tag:'Закупки · ВЭД · Таможня',color:'var(--g8)',edit:'ред. 5',
+    nodes:[{t:'Спец. по тамож. оформлению'},{t:'Менеджер по ВЭД',qty:2,highlight:true,edit:'было ×1'},{t:'Менеджер по закупкам'}]},
+  {title:'Рук. сервисного обслуживания',tag:'Гарантия · Ремонт · АСЦ',color:'var(--g9)',
+    nodes:[{t:'Ведущий инженер'},{t:'Спец. серв. обслуживания'},{t:'Мастер-приёмщик'}]},
+  {title:'Рук. складского хранения и логистики',tag:'Склад · Логистика',color:'var(--g10)',
+    nodes:[{t:'Менеджер склада и логистики'},{t:'Рук. гр. складских операций'},{t:'Кладовщик',qty:2},{t:'Грузчик',qty:5},{t:'Водитель-грузчик'},{t:'Разнорабочий'},{t:'Водитель',qty:3}]},
+  {title:'Руководитель IT',tag:'Инфраструктура · 1С',color:'var(--g11)',
+    nodes:[{t:'Системный администратор'},{t:'Программист 1С'}]},
+  {title:'Зам. ГД по финансам и экономике',tag:'Финансы и экономика',color:'var(--g12)',edit:'ред. 6',
+    nodes:[{t:'Специалист по ценообразованию',removed:true,edit:'функция упразднена'}]},
+  {title:'Главный бухгалтер',tag:'Бухгалтерия · прямо к ГД',color:'var(--g13)',
+    nodes:[{t:'Бухгалтер',qty:2}]}
+];
+
+const orgWrap = document.getElementById('orgBranches');
+orgBranches.forEach(b=>{
+  const div=document.createElement('div');
+  div.className='branch';
+  let nodesHtml='';
+  b.nodes.forEach(n=>{
+    const reps = n.qty || 1;
+    for(let i=0;i<reps;i++){
+      if(n.removed){
+        nodesHtml += `<div class="node removed">${n.t}${i===0?` <span class="edit-mark">${n.edit}</span>`:''}</div>`;
+      } else {
+        nodesHtml += `<div class="node">${n.t}${n.highlight&&i===0?` <span class="edit-mark">${n.edit}</span>`:''}</div>`;
+      }
+    }
+  });
+  div.innerHTML = `
+    <div class="branch-head" style="background:${b.color}">
+      <b>${b.title}${b.edit?` <span class="edit-mark">${b.edit}</span>`:''}</b>
+      <small>${b.tag}</small>
+    </div>
+    <div class="branch-body">${nodesHtml}</div>
+  `;
+  orgWrap.appendChild(div);
+});
+
+/* ---------------- ROLES DATA ---------------- */
+const groups = [
+{title:'Направление по работе с персоналом',color:'g1',
+  ckp:'Укомплектованная, адаптированная и юридически защищённая команда, работающая в комфортной и безопасной среде — кадровая и административная база для запуска и работы всей TO-BE модели',
+  sub:'Рук. направления по работе с персоналом → прямое подчинение ГД',
+  roles:[
+    {title:'Руководитель направления по работе с персоналом',sub:'Прямое подчинение ГД',
+      ckp:'Укомплектованная оргструктура, в которой закрыты все критичные вакансии, каждый новый сотрудник проходит качественную адаптацию, в команде поддерживается управляемый кадровый климат, а трудовые отношения оформлены без правовых рисков',
+      fn:'Планирование потребности в персонале по TO-BE структуре · разработка и контроль системы адаптации · формирование кадрового резерва · описания должностей, грейды и вилки · участие во внедрении системы мотивации · охрана труда и ТБ · АХО офиса'},
+    {title:'Юрист',sub:'Подчинение Зам. ГД по персоналу',
+      ckp:'Отсутствие правовых рисков в трудовых отношениях, корректно оформленная кадровая и договорная документация',
+      fn:'Подготовка и проверка трудовых договоров, допсоглашений, ДИ · консультации по трудовому праву · сопровождение трудовых споров · взаимодействие с трудовой инспекцией · оценка правовых рисков при изменениях'},
+    {title:'HR-специалист',sub:'Подчинение Зам. ГД по персоналу',
+      ckp:'Своевременно закрытые вакансии и корректно оформленный кадровый документооборот без ошибок и задержек',
+      fn:'Скрининг резюме и интервью · координация собеседований · кадровое делопроизводство · подготовка приказов и личных дел · табели · отчётность по вакансиям и воронке'},
+    {title:'Специалист по охране труда и ТБ',sub:'Подчинение Зам. ГД по персоналу',
+      ckp:'Отсутствие производственных инцидентов и нарушений норм охраны труда, пройденные проверки без предписаний',
+      fn:'Инструкции по ОТ и ТБ · инструктажи · обучение и проверка знаний · расследование инцидентов · подготовка к проверкам'},
+    {title:'Специалист по АХО',sub:'Подчинение Зам. ГД по персоналу',
+      ckp:'Обеспеченный всем необходимым офис и помещения без административных сбоев',
+      fn:'Закупка расходников и инвентаря · контроль состояния помещений и ремонт · договоры на обслуживание · реестр имущества · контроль уборщицы'},
+    {title:'Офис-менеджер',sub:'Подчинение Зам. ГД по персоналу',
+      ckp:'Организованный рабочий офис, где административные вопросы решаются без эскалаций',
+      fn:'Приём звонков и гостей · командировки · корреспонденция · порядок на ресепшн · корпоративные мероприятия · административная поддержка руководителей'},
+    {title:'Уборщица',sub:'Подчинение Зам. ГД по персоналу',
+      ckp:'Чистые и ухоженные рабочие помещения, создающие комфортные условия для работы',
+      fn:'Ежедневная уборка помещений и санузлов · мытьё окон и поверхностей · вынос мусора · пополнение расходников'}
+  ]},
+{title:'Развитие бизнеса — продвижение и клиентский сервис',color:'g2',isEdit:true,
+  ckp:'Коммерческие каналы обеспечены качественным трафиком, контентом, маркетинговыми материалами и профессиональным клиентским сопровождением. Группа усиливает продажи через продвижение, лояльность клиентов, а также системную аналитику рынка, клиентов и конкурентов.',
+  sub:'Зам. ГД по развитию бизнеса → прямое подчинение ГД',
+  roles:[
+    {title:'Заместитель ГД по развитию бизнеса',sub:'Прямое подчинение ГД · Куратор e-com · Исследования и аналитика',isEdit:true,
+      ckp:'Коммерческие каналы обеспечены управляемым трафиком, качественным контентом и маркетинговыми материалами. Клиенты получают профессиональное постпродажное сопровождение. Решения опираются на регулярные исследования рынка и клиентов.',
+      fn:'Управление блоком развития: продукт, маркетинг, клиентский сервис · приоритизация проектов и ресурсов · функциональное кураторство над e-com · ведение ассортиментного комитета · проведение исследований и аналитики рынка, клиентского спроса и конкурентной среды для поддержки решений ГД и коммерческих каналов'},
+    {title:'Дизайнер',sub:'Подчинение Зам. ГД по развитию',
+      ckp:'Актуальные, корректные и пригодные к немедленному использованию визуальные материалы для всех каналов',
+      fn:'Вёрстка карточек товаров для маркетплейсов и интернет-магазина · оформление КП и презентаций · баннеры и материалы для SMM · контроль соответствия бренд-буку'},
+    {title:'Менеджер по социальным медиа',sub:'Подчинение Зам. ГД по развитию',
+      ckp:'Регулярно обновляемые и растущие социальные каналы компании с вовлечённой аудиторией',
+      fn:'Контент-план · публикация контента по расписанию · модерация · работа с аудиторией · аналитика охватов и вовлечённости'},
+    {title:'Брендинговое агентство',sub:'Внешний подрядчик',
+      ckp:'Актуальная, последовательная и профессиональная визуальная и коммуникационная идентичность компании',
+      fn:'Визуальная идентичность и бренд-бук · коммуникационные концепции · дизайн упаковки · материалы для ключевых событий'},
+    {title:'Digital-специалист',sub:'Подчинение Зам. ГД по развитию',
+      ckp:'Управляемый входящий трафик из цифровых каналов с понятной стоимостью лида и растущей конверсией',
+      fn:'Контекст и таргет · управление бюджетами по каналам · SEO · сквозная аналитика · еженедельная отчётность по трафику'},
+    {title:'Руководитель клиентского сервиса',sub:'Подчинение Зам. ГД по развитию',
+      ckp:'Управляемый и стандартизированный постпродажный сервис, в котором все обращения обрабатываются в срок',
+      fn:'Стандартизация процессов обработки обращений · SLA по обращениям · управление менеджером сервиса · мониторинг индекса лояльности'},
+    {title:'Менеджер отдела клиентского сервиса',sub:'Подчинение Рук. клиентского сервиса',
+      ckp:'Каждое клиентское обращение обработано в срок, с правильным ответом и без повторного контакта',
+      fn:'Приём и обработка обращений по всем каналам · регистрация и приоритизация · работа с претензиями · эскалация нестандартных кейсов'}
+  ]},
+{title:'Отдел развития продуктов',color:'g3',
+  ckp:'Актуальная, технически проверенная и документально обеспеченная продуктовая линейка: каждый продукт прошёл испытания, имеет полную документацию и готов к продаже во всех каналах',
+  sub:'Рук. отдела развития продуктов → прямое подчинение ГД',
+  roles:[
+    {title:'Руководитель отдела развития продуктов',sub:'Прямое подчинение ГД',
+      ckp:'Продуктовая линейка компании развивается, модернизируется и поддерживается в актуальном состоянии',
+      fn:'Управление развитием и модернизацией линейки · требования к новым продуктам · координация испытаний · контроль цикла от образца до запуска · данные на ассортиментный комитет'},
+    {title:'Менеджер отдела развития продуктов',sub:'Подчинение Рук. отдела развития продуктов',
+      ckp:'Своевременно собранный и структурированный пакет продуктовой информации',
+      fn:'Сбор и систематизация данных по продуктам · координация актов сверки и техзаключений · реестр статусов проектов · материалы для ассортиментного комитета'},
+    {title:'Дизайнер-верстальщик',sub:'Подчинение Рук. отдела развития продуктов',isEdit:true,editTag:'ред. 2 · новая роль',
+      ckp:'Технически точные и аккуратно свёрстанные материалы продукта — карточки, спецификации, каталоги и техническая документация, готовые к печати и публикации без доработок',
+      fn:'Вёрстка технической документации, спецификаций и паспортов продукта · подготовка каталогов и прайс-листов к печати и публикации · вёрстка карточек товаров совместно с Дизайнером блока продвижения · соблюдение бренд-бука · подготовка материалов для тендеров и B2B-переговоров · ведение библиотеки шаблонов'}
+  ]},
+{title:'Технический отдел',color:'g4',
+  ckp:'Независимая техническая экспертиза: каждый продукт, переданный на диагностику, прошёл объективную проверку, получил техническое заключение и рекомендацию до запуска в продажу',
+  sub:'Рук. технического отдела → прямое подчинение ГД',
+  roles:[
+    {title:'Руководитель технического отдела',sub:'Прямое подчинение ГД',isEdit:true,editTag:'ред. 3',
+      ckp:'Управляемый технический отдел, в котором все запросы на диагностику выполнены в срок, заключения объективны и принимаются смежными группами как основание для решений по продуктам',
+      fn:'Организация и управление работой отдела · приоритизация запросов на диагностику · контроль сроков и качества заключений · координация с продуктом, сервисом и закупками'},
+    {title:'Инженер по диагностике оборудования',sub:'Подчинение Рук. технического отдела',
+      ckp:'Объективное техническое заключение по каждому продукту: соответствие характеристикам подтверждено или опровергнуто, риски зафиксированы',
+      fn:'Приём образцов от продукта и сервиса · технические испытания · акт сверки параметров · выявление рисков и дефектов · техзаключение с рекомендациями'}
+  ]},
+{title:'Тендерный отдел (B2G)',color:'g5',
+  ckp:'Выигранные и прибыльно исполненные тендеры с управляемым портфелем заявок — систематизированный тендерный канал с подтверждённой маржинальностью',
+  sub:'РОП тендерного отдела → прямое подчинение ГД',
+  roles:[
+    {title:'РОП тендерного отдела (B2G)',sub:'Прямое подчинение ГД · вакансия',
+      ckp:'Выигранные и прибыльно исполненные тендеры с контролируемой маржинальностью и в согласованные сроки',
+      fn:'Формирование и управление портфелем заявок · отбор по маржинальности и риску · контроль подготовки документов · управление исполнением контрактов'},
+    {title:'Менеджер по тендерам',sub:'Подчинение РОП тендерного отдела',
+      ckp:'Корректно подготовленный и поданный в срок комплект тендерной документации без технических ошибок',
+      fn:'Мониторинг тендерных площадок · анализ тендеров · подготовка пакета документов · сопровождение выигранных контрактов'}
+  ]},
+{title:'E-commerce',color:'g6',isEdit:true,
+  ckp:'Управляемый e-commerce канал — интернет-магазин и маркетплейсы — с прозрачной воронкой, работающей маршрутизацией входящего потока и системным ростом продаж',
+  sub:'РОП E-com → прямое подчинение ГД',
+  roles:[
+    {title:'РОП E-com',sub:'Прямое подчинение ГД · Интернет-продажи + Маркетплейсы',
+      ckp:'Управляемый e-commerce канал с прозрачной воронкой, правильной маршрутизацией входящего потока и стабильным ростом продаж',
+      fn:'Управление командой: планы и контроль их выполнения · контроль конверсии воронки на каждом этапе · ценовая политика в цифровом канале · участие в коммерческом комитете'},
+    {title:'Руководитель И-М (интернет-магазина)',sub:'Подчинение РОП E-com',isEdit:true,editTag:'ред. 4 · новая роль',
+      ckp:'Управляемая команда интернет-магазина: воронка от лида до сделки и повторной покупки работает по понятным правилам, план продаж выполняется',
+      fn:'Управление командой интернет-магазина: 2 менеджера по продажам (включая лидирование) и 1 менеджер по сопровождению · контроль квалификации и маршрутизации входящих лидов · контроль передачи B2B-лидов с перепродажей в опт по регламенту · отчётность РОП E-com'},
+    {title:'Менеджер по продажам (лидирование)',sub:'Подчинение Руководителю И-М · ×2',isEdit:true,editTag:'ред. 4',
+      ckp:'Каждый входящий лид квалифицирован и обработан в срок: клиент доведён до первой сделки, а B2B-лид с перепродажей передан в опт с заполненной карточкой',
+      fn:'Приём и быстрая квалификация входящих обращений по типу клиента · переговоры и доведение до первой оплаченной сделки · передача B2B-лидов с перепродажей в опт по региону · ведение карточек клиентов'},
+    {title:'Менеджер по сопровождению',sub:'Подчинение Руководителю И-М · ×1',isEdit:true,editTag:'ред. 4',
+      ckp:'Действующие клиенты интернет-магазина совершают повторные заказы и не требуют повторного привлечения',
+      fn:'Приём и оформление повторных заказов · регулярный контакт с активированными клиентами · решение текущих вопросов клиента · координация со складом и сервисом'},
+    {title:'Менеджер по маркетплейсам',sub:'Подчинение РОП E-com · ×3',isEdit:true,editTag:'ред. 4 · было ×2',
+      ckp:'Актуальные продающие карточки и стабильные растущие продажи на маркетплейсах при управляемых рекламных расходах',
+      fn:'Ведение и оптимизация карточек товаров · рекламные кампании и ДРР · участие в акциях площадок · контроль остатков на складах площадок · работа с отзывами'}
+  ]},
+{title:'Опт / B2B',color:'g7',
+  ckp:'Управляемый B2B-партнёрский канал: работающая региональная база, чёткая схема получения лидов от e-com, прозрачная коммерческая политика и контролируемая дебиторская задолженность',
+  sub:'РОП (дилеры, дистрибьюторы) → прямое подчинение ГД',
+  roles:[
+    {title:'РОП (дилеры, дистрибьюторы)',sub:'Прямое подчинение ГД',
+      ckp:'Управляемый B2B-партнёрский канал с работающей клиентской базой, прозрачной коммерческой политикой и контролируемой дебиторской задолженностью',
+      fn:'Единая коммерческая политика по регионам · управление командой региональных менеджеров · развитие клиентской базы · координация с e-com по регламенту передачи лидов'},
+    {title:'Менеджеры по продажам (ПФО · ЦФО · ЮФО/СКФО)',sub:'Подчинение РОП · по регионам',
+      ckp:'Растущий и управляемый клиентский портфель в закреплённом регионе: партнёры развиваются, новые подключаются, дебиторка под контролем',
+      fn:'Развитие действующей клиентской базы в регионе · поиск и подключение новых клиентов · приём тёплых B2B-лидов от e-com по региону · контроль дебиторки'},
+    {title:'КАМ (ключевые клиенты)',sub:'Подчинение РОП',
+      ckp:'Ключевые клиенты выполняют плановые показатели по ассортименту, обороту и коммерческим условиям',
+      fn:'Стратегические переговоры с ключевыми клиентами и сетями · согласование ассортиментных матриц · мониторинг выполнения планов'},
+    {title:'Менеджеры по сопровождению',sub:'Подчинение РОП · ×3',
+      ckp:'Действующие клиенты совершают регулярные заказы, расширяют ассортимент и не требуют постоянного внимания региональных менеджеров',
+      fn:'Регулярный контакт с действующими клиентами · приём и оформление повторных заказов · расширение ассортимента у партнёров · ведение CRM'}
+  ]},
+{title:'Закупки и ВЭД',color:'g8',isEdit:true,
+  ckp:'Бесперебойное техническое обеспечение закупок и логистики: поставщики найдены, договоры заключены, товар ввезён, растаможен и доставлен на склад в срок по контролируемой себестоимости',
+  sub:'Рук. по закупкам и ВЭД → прямое подчинение ГД',
+  roles:[
+    {title:'Руководитель по закупкам и ВЭД',sub:'Прямое подчинение ГД',isEdit:true,editTag:'ред. 5',
+      ckp:'Все закупки и ВЭД-поставки исполнены технически корректно и в срок: поставщики выбраны, договоры заключены, товар доставлен, растаможен и принят на склад',
+      fn:'Организация закупочного процесса · база поставщиков · договоры поставки · организация ВЭД-поставок · управление командой: специалист по таможне, 2 менеджера ВЭД, менеджер по закупкам'},
+    {title:'Специалист по таможенному оформлению',sub:'Подчинение Рук. по закупкам и ВЭД',
+      ckp:'Каждая ввозимая поставка оформлена без ошибок, в минимально возможные сроки, без штрафов',
+      fn:'Подготовка и подача таможенных деклараций · расчёт пошлин, НДС и сборов · взаимодействие с брокерами и органами'},
+    {title:'Менеджер по ВЭД',sub:'Подчинение Рук. по закупкам и ВЭД · ×2',isEdit:true,editTag:'ред. 5 · было ×1',
+      ckp:'Международные поставки исполнены в срок, в полном объёме, с корректной документацией и в рамках согласованной себестоимости',
+      fn:'Подготовка внешнеэкономических контрактов · переговоры с зарубежными поставщиками · координация международных поставок · контроль соответствия товара спецификации'},
+    {title:'Менеджер по закупкам',sub:'Подчинение Рук. по закупкам и ВЭД',
+      ckp:'Заказы поставщикам размещены своевременно и исполнены в срок на основании утверждённых объёмов',
+      fn:'Размещение заказов у поставщиков · контроль исполнения заказов · мониторинг складских остатков · взаимодействие со складом'}
+  ]},
+{title:'Сервисное обслуживание',color:'g9',
+  ckp:'Управляемый постпродажный сервис: гарантийные случаи и обращения закрываются в срок и без эскалаций; технические данные о дефектах передаются в продукт',
+  sub:'Рук. сервисного обслуживания → прямое подчинение ГД',
+  roles:[
+    {title:'Руководитель сервисного обслуживания',sub:'Прямое подчинение ГД',
+      ckp:'Управляемый постпродажный сервис: все гарантийные случаи и обращения закрываются в срок и без эскалаций',
+      fn:'Управление командой отдела сервиса · стандарты сервисного обслуживания и SLA · взаимодействие с закупками по запчастям · передача данных о дефектах в продукт'},
+    {title:'Ведущий инженер',sub:'Подчинение Рук. сервиса',
+      ckp:'Сложные сервисные кейсы диагностированы и решены технически корректно, причины типовых поломок выявлены и переданы в продукт',
+      fn:'Диагностика и ремонт сложных неисправностей · анализ причин системных поломок · технические рекомендации по улучшению продукта'},
+    {title:'Специалист отдела сервисного обслуживания',sub:'Подчинение Рук. сервиса',
+      ckp:'Каждое сервисное обращение зарегистрировано, обработано в SLA и закрыто без повторного контакта по той же проблеме',
+      fn:'Приём и регистрация заявок на ремонт · консультация клиентов по гарантии · гарантийные акты и отчётность'},
+    {title:'Мастер-приёмщик',sub:'Подчинение Рук. сервиса',
+      ckp:'Каждая единица оборудования принята с корректно оформленными документами, зафиксированным состоянием и без потери информации о дефекте',
+      fn:'Приёмка оборудования от клиентов · фиксация описания дефекта · оформление приёмного акта · выдача оборудования клиенту'}
+  ]},
+{title:'Складское хранение и логистика',color:'g10',
+  ckp:'Складской и логистический контур, в котором все заказы комплектуются без ошибок и отгружаются в согласованные сроки',
+  sub:'Рук. складского хранения и логистики → прямое подчинение ГД',
+  roles:[
+    {title:'Руководитель складского хранения и логистики',sub:'Прямое подчинение ГД',
+      ckp:'Складской и логистический контур, в котором все заказы комплектуются без ошибок и отгружаются в согласованные сроки',
+      fn:'Организация работы склада · планирование и маршрутизация отгрузок · управление персоналом · контроль потерь ТМЦ · участие в операционном комитете'},
+    {title:'Менеджер склада и логистики',sub:'Подчинение Рук. склада',
+      ckp:'Корректно оформленный и проведённый полный комплект документов по каждой отгрузке без ошибок и задержек',
+      fn:'Комплект отгрузочных документов · работа с транспортными компаниями · ЭДО · мониторинг статусов доставки'},
+    {title:'Руководитель группы складских и логистических операций',sub:'Подчинение Рук. склада',
+      ckp:'Сменная работа склада выполнена в полном объёме, в срок и без ошибок комплектации',
+      fn:'Постановка сменных задач · контроль выполнения смены · организация приёмки товара · сборка и комплектация заказов'},
+    {title:'Кладовщики ×2',sub:'Подчинение Рук. группы складских операций',
+      ckp:'Точный складской учёт: каждая единица товара корректно оприходована, размещена по адресу и находится по запросу без потерь',
+      fn:'Приёмка товара и проверка на соответствие накладным · размещение по адресам хранения · учёт остатков · инвентаризации'},
+    {title:'Грузчики ×5 · Водитель-грузчик',sub:'Подчинение Рук. группы складских операций',
+      ckp:'Грузы перемещены, погружены и выгружены без повреждений, в срок и в полном соответствии с заданием',
+      fn:'Погрузка и разгрузка транспортных средств · перемещение товара внутри склада · упаковка и маркировка заказов'},
+    {title:'Разнорабочий',sub:'Подчинение Рук. группы складских операций',
+      ckp:'Вспомогательные складские работы выполнены своевременно и обеспечивают бесперебойную работу основных процессов',
+      fn:'Вспомогательные складские работы по заданию руководителя · поддержание чистоты и порядка · помощь при погрузке и разгрузке'},
+    {title:'Водители ×3',sub:'Подчинение Рук. группы складских операций',
+      ckp:'Грузы доставлены клиентам и партнёрам в срок, в сохранности и с корректно оформленными документами',
+      fn:'Доставка товаров по согласованным маршрутам · приём и сдача товара по документам · связь с диспетчером и клиентом'}
+  ]},
+{title:'IT',color:'g11',
+  ckp:'Стабильно работающие IT-системы без критичных сбоев и реализованные в срок проекты автоматизации — инфраструктурная основа для работы всей компании',
+  sub:'Руководитель IT → прямое подчинение ГД',
+  roles:[
+    {title:'Руководитель IT',sub:'Прямое подчинение ГД',
+      ckp:'Доступные и стабильно работающие IT-системы без критичных сбоев и реализованные в срок проекты автоматизации бизнес-процессов',
+      fn:'Управление IT-функцией и приоритизация задач · поддержка и развитие 1С · автоматизация процессов · информационная безопасность · участие в операционном комитете'},
+    {title:'Системный администратор',sub:'Подчинение Рук. IT',
+      ckp:'Исправно работающая пользовательская и серверная инфраструктура: все сотрудники имеют доступ к нужным системам, инциденты закрываются в SLA',
+      fn:'Поддержка пользователей · управление корпоративной сетью · администрирование серверов · управление доступами · резервное копирование'},
+    {title:'Программист 1С',sub:'Подчинение Рук. IT',
+      ckp:'Рабочие и корректно реализованные доработки 1С, которые закрывают бизнес-задачи в срок и без критичных ошибок',
+      fn:'Доработка конфигурации 1С · интеграции с внешними системами · отчёты и аналитические формы · тестирование доработок'}
+  ]},
+{title:'Финансы и экономика',color:'g12',isEdit:true,
+  ckp:'Управляемая финансовая система: достоверная отчётность, контроль бюджета по всем группам. Функция ценообразования упразднена как отдельная роль и переведена на автоматизацию совместно с ассортиментным комитетом.',
+  sub:'Зам. ГД по финансам и экономике → прямое подчинение ГД',
+  roles:[
+    {title:'Заместитель ГД по финансам и экономике',sub:'Прямое подчинение ГД',isEdit:true,editTag:'ред. 6',
+      ckp:'Управляемая финансовая система с достоверной отчётностью и контролем бюджета по всем группам — ГД видит экономику компании в любой момент',
+      fn:'Финансовое планирование и бюджетирование · управленческая отчётность · контроль отклонений факт/план · сопровождение системы мотивации · ведение финансового комитета · функция ценообразования автоматизирована: РРЦ и ценовые матрицы рассчитываются в системе, решения по ценовой политике выносятся на коммерческий и ассортиментный комитеты'}
+  ]},
+{title:'Бухгалтерия',color:'g13',
+  ckp:'Сданная без существенных ошибок бухгалтерская и налоговая отчётность по всем участкам учёта, в срок и без штрафов от контролирующих органов',
+  sub:'Главный бухгалтер → прямое подчинение ГД',
+  roles:[
+    {title:'Главный бухгалтер',sub:'Прямое подчинение ГД',
+      ckp:'Сданная без существенных ошибок бухгалтерская и налоговая отчётность — в срок, без штрафов и претензий от контролирующих органов',
+      fn:'Организация и контроль ведения учёта · налоговая отчётность · взаимодействие с контролирующими органами · управление бухгалтерами · закрытие периода'},
+    {title:'Бухгалтеры ×2',sub:'Подчинение Главному бухгалтеру',
+      ckp:'Корректно отражённые операции по закреплённому участку учёта — без ошибок и в срок',
+      fn:'Первичная документация · ведение участков учёта · сверки с контрагентами · проводки · участие в закрытии периода'}
+  ]}
+];
+
+const groupList = document.getElementById('groupList');
+groups.forEach((g,i)=>{
+  const block = document.createElement('div');
+  block.className='group-block';
+  const rolesHtml = g.roles.map(r=>`
+    <div class="role-card${r.isEdit?' new':''}" style="--g:var(--${g.color});--gt:var(--${g.color}-t)">
+      <h4>${r.title}${r.editTag?`<span class="edit-mark">${r.editTag}</span>`:''}</h4>
+      <div class="rsub">${r.sub}</div>
+      <div class="rtag" style="--g:var(--${g.color});--gt:var(--${g.color}-t)">${g.title.split(' ')[0]}</div>
+      <div class="rlabel">ЦКП роли</div>
+      <div class="rckp">${r.ckp}</div>
+      <div class="rlabel">Функции</div>
+      <div class="rfn">${r.fn}</div>
+    </div>
+  `).join('');
+  block.innerHTML = `
+    <div class="group-box" style="--g:var(--${g.color});--gt:var(--${g.color}-t)">
+      <div class="flabel">Функциональная группа ${i+1}</div>
+      <h3>${g.title}${g.isEdit?'<span class="edit-mark">обновлено</span>':''}</h3>
+      <div class="clabel">ЦКП функциональной группы</div>
+      <div class="cdesc">${g.ckp}</div>
+      <div class="csub">${g.sub}</div>
+    </div>
+    <div class="roles-grid">${rolesHtml}</div>
+  `;
+  groupList.appendChild(block);
+});
+
+/* ---------------- MONTHLY REPORT GRID ---------------- */
+const reports = [
+  {h:'Рук. направления по работе с персоналом',tag:'HR-блок',items:['Укомплектованность — статус TO-BE структуры','Подбор — воронка кандидатов, срок закрытия','Текучесть и адаптация']},
+  {h:'Зам. ГД по развитию бизнеса',tag:'Блок развития',items:['Трафик и стоимость лида','Статус проектов','Новинки — срок от решения до полки','Индекс лояльности и обращения']},
+  {h:'Рук. отдела развития продуктов',tag:'Отдел развития продуктов',items:['Статус продуктовых проектов','Результаты испытаний','Готовность к ассортиментному комитету']},
+  {h:'Рук. технического отдела',tag:'Технический отдел',items:['Продукты на диагностике','Заключения за период','Выявленные системные дефекты']},
+  {h:'РОП тендерного отдела (B2G)',tag:'Тендерный канал',items:['Реестр заявок','Результат: подано / выиграно / маржинальность','Прогноз до конца квартала']},
+  {h:'РОП E-com',tag:'E-commerce канал',items:['Выручка и ВП по каналам, динамика','Воронка: лиды, конверсия, средний чек','Маркетплейсы: выручка, ДРР','Передачи в опт и конверсия в сделки']},
+  {h:'РОП (дилеры, дистрибьюторы)',tag:'B2B / Опт канал',items:['Выручка и ВП по регионам','Клиентский портфель','Дебиторская задолженность']},
+  {h:'Рук. по закупкам и ВЭД',tag:'Закупки / ВЭД',items:['Исполнение заказов','Сроки поставок: план/факт','Закупочные цены и отклонения']},
+  {h:'Рук. сервисного обслуживания',tag:'Сервисный блок',items:['Сервис SLA, повторные обращения','Гарантийные случаи','Системные проблемы продукции']},
+  {h:'Рук. складского хранения и логистики',tag:'Склад / Логистика',items:['SLA отгрузок, ошибки комплектации','Производительность на сотрудника','Потери ТМЦ']},
+  {h:'Руководитель IT',tag:'IT-блок',items:['Аптайм систем','IT-задачи бизнеса: % выполненных в срок','Проекты автоматизации']},
+  {h:'Зам. ГД по финансам и экономике',tag:'Финансовый блок',items:['Управленческий P&L','Бюджет: выполнение по статьям','Денежный поток и прогноз ликвидности']}
+];
+const reportGrid = document.getElementById('reportGrid');
+reports.forEach(r=>{
+  const div=document.createElement('div');
+  div.className='report-card';
+  div.innerHTML = `<h4>${r.h}</h4><div class="rtag">${r.tag}</div>` + r.items.map(it=>`<p>${it}</p>`).join('');
+  reportGrid.appendChild(div);
+});
+</script>
+</body>
+</html>

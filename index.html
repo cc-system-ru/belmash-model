@@ -165,6 +165,14 @@ h1,h2,h3{font-family:'Playfair Display',serif}
 }
 .changelog li b{color:var(--text-navy);font-weight:700}
 
+.comm-strip-label{margin-top:56px;font-family:'Nunito Sans';font-size:11.5px;font-weight:800;letter-spacing:.1em;color:var(--text-gray-2);text-transform:uppercase;text-align:center}
+.comm-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:18px}
+.comm-strip-card{border-top:3px solid var(--gold);background:var(--white);padding:18px 20px;text-align:center}
+.comm-strip-card b{display:block;font-size:14px;color:var(--text-navy);font-weight:700;margin-bottom:6px}
+.comm-strip-card span{font-family:'Nunito Sans';font-size:11px;color:var(--text-gray);font-weight:600}
+.whatchanged-head{margin-top:64px;text-align:center}
+.whatchanged-head .eyebrow{text-align:center}
+
 /* ============ ROLES TAB ============ */
 .group-block{margin-top:46px}
 .group-block:first-child{margin-top:44px}
@@ -332,6 +340,36 @@ footer{border-top:1px solid var(--border-2);padding:30px 0;text-align:center;col
       <div class="branches" id="orgBranches"></div>
     </div>
 
+    <div class="comm-strip-label">Второй слой управления — комитеты</div>
+    <div class="comm-strip">
+      <div class="comm-strip-card" style="border-top-color:var(--teal)"><b>Ассортиментный комитет</b><span>1× в месяц</span></div>
+      <div class="comm-strip-card" style="border-top-color:var(--gold-dark)"><b>Коммерческий комитет</b><span>1× в месяц</span></div>
+      <div class="comm-strip-card" style="border-top-color:var(--navy)"><b>Операционный комитет</b><span>1× в месяц</span></div>
+      <div class="comm-strip-card" style="border-top-color:var(--g3)"><b>Финансовый комитет</b><span>1× в месяц</span></div>
+    </div>
+
+    <div class="whatchanged-head">
+      <div class="eyebrow">Ключевые решения</div>
+      <h2 style="font-size:30px">Что принципиально изменилось</h2>
+    </div>
+    <div class="logic-grid" style="margin-top:30px">
+      <div class="logic-card"><div class="ghost-num">E</div>
+        <h3>E-com — самостоятельный коммерческий контур</h3>
+        <p>РОП E-com подчиняется ГД напрямую. Команда интернет-магазина квалифицирует весь входящий поток: B2C и малый B2B остаются в e-com, B2B-обращения с признаком перепродажи передаются в опт по региону с заполненной карточкой клиента.</p>
+      </div>
+      <div class="logic-card"><div class="ghost-num">3</div>
+        <h3>Три коммерческих канала — прямо к ГД, координация через комитет</h3>
+        <p>РОП E-com, РОП дилеры/дистрибьюторы и РОП тендерного отдела подчиняются ГД напрямую и независимо. Координация — через коммерческий комитет: единая ценовая политика, регламент передачи лидов из e-com в опт, синхронизация планов.</p>
+      </div>
+      <div class="logic-card"><div class="ghost-num">13</div>
+        <h3>13 функциональных групп — все на одном уровне, прямо к ГД</h3>
+        <p>Каждый руководитель подчиняется ГД напрямую и ежемесячно отчитывается по единому шаблону. Нет промежуточных уровней, которые фильтруют информацию. У каждой группы — чёткий ЦКП и своя зона ответственности.</p>
+      </div>
+      <div class="logic-card"><div class="ghost-num">2</div>
+        <h3>Два слоя управления</h3>
+        <p>Оргструктура: 13 прямых отчётов ГД, все на одном уровне, у каждого свой ЦКП и вертикаль вниз. Комитеты: координация на стыке групп, командный показатель и командный бонус.</p>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -498,6 +536,37 @@ footer{border-top:1px solid var(--border-2);padding:30px 0;text-align:center;col
       <h2>Ежемесячный отчёт: 13 групп + 4 комитета</h2>
       <p class="lede">Каждый из 13 прямых подчинённых ГД ежемесячно предоставляет письменный отчёт по единому шаблону: план / факт / что мешает / что нужно от кого.</p>
       <div class="report-grid" id="reportGrid"></div>
+    </div>
+
+    <div class="report-section">
+      <h2>Комитеты — что видит ГД</h2>
+      <p class="lede">Дашборд по каждому комитету между заседаниями — не нужно ждать встречи, чтобы увидеть динамику.</p>
+      <div class="report-grid">
+        <div class="report-card">
+          <h4>Коммерческий комитет</h4><div class="rtag">2× в месяц</div>
+          <p>Конверсия входящего потока — динамика</p>
+          <p>Общее выполнение плана e-com + опт + тендер</p>
+          <p>Протокол разбора конфликтов по клиентской базе</p>
+        </div>
+        <div class="report-card">
+          <h4>Ассортиментный комитет</h4><div class="rtag">1× в месяц</div>
+          <p>Доля активного ассортимента в выручке — динамика</p>
+          <p>Решения по запуску новинок и выводу неликвидов</p>
+          <p>% новинок от решения до полки в срок</p>
+        </div>
+        <div class="report-card">
+          <h4>Операционный комитет</h4><div class="rtag">2× в месяц</div>
+          <p>Сквозной SLA — % заказов без рекламации, динамика</p>
+          <p>Где узкое место в цепочке</p>
+          <p>Инциденты, приведшие к сбоям</p>
+        </div>
+        <div class="report-card">
+          <h4>Финансовый комитет</h4><div class="rtag">1× в месяц</div>
+          <p>Бюджет план/факт по каждому блоку</p>
+          <p>Прогноз на квартал</p>
+          <p>Раз в квартал — письменная оценка каждого руководителя</p>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -795,10 +864,9 @@ groups.forEach((g,i)=>{
   const block = document.createElement('div');
   block.className='group-block';
   const rolesHtml = g.roles.map(r=>`
-    <div class="role-card${r.isEdit?' new':''}" style="--g:var(--${g.color});--gt:var(--${g.color}-t)">
+    <div class="role-card" style="--g:var(--${g.color});--gt:var(--${g.color}-t)">
       <h4>${r.title}</h4>
       <div class="rsub">${r.sub}</div>
-      <div class="rtag" style="--g:var(--${g.color});--gt:var(--${g.color}-t)">${g.title.split(' ')[0]}</div>
       <div class="rlabel">ЦКП роли</div>
       <div class="rckp">${r.ckp}</div>
       <div class="rlabel">Функции</div>
